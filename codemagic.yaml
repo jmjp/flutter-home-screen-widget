@@ -1,0 +1,28 @@
+workflows:
+  ios-project-debug: # workflow ID
+    name: iOS debug # workflow name
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+          XCODE_PROJECT: "Runner.xcodeproj" # <-- Put the name of your project here. 
+          XCODE_SCHEME: "Runner" # <-- Put the name of your scheme here.
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd . && flutter pub get
+      - name: Install pods
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Build debug app
+        script: |
+          cd . && cd ios && xcodebuild build -project "$XCODE_PROJECT" \-scheme "$XCODE_SCHEME" \ CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
+    artifacts:
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+    publishing:
+      email:
+        recipients:
+          - joaozinhosleepy@gmail.com
